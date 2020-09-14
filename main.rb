@@ -119,13 +119,28 @@ get /\/cfs_directories\/(\d+).json/ do
   dir = ContentRepository.new.directory(params['captures'].first)
   if dir
     status 200
-    headers \
-        'Content-Type' => 'application/json'
+    headers 'Content-Type' => 'application/json'
     body JSON.generate(dir)
   else
     status 404
-    headers \
-        'Content-Type' => 'application/json'
+    headers 'Content-Type' => 'application/json'
+    body JSON.generate({ 'status': 404, 'error': "Not Found" })
+  end
+end
+
+get /\/cfs_directories\/(\d+)\/show_tree/ do
+  status 406
+end
+
+get /\/cfs_directories\/(\d+)\/show_tree.json/ do
+  dir = ContentRepository.new.directory_tree(params['captures'].first)
+  if dir
+    status 200
+    headers 'Content-Type' => 'application/json'
+    body JSON.generate(dir)
+  else
+    status 404
+    headers 'Content-Type' => 'application/json'
     body JSON.generate({ 'status': 404, 'error': "Not Found" })
   end
 end

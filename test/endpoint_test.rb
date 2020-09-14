@@ -1,7 +1,7 @@
 require 'test_helper'
 require_relative '../main'
 
-class RequestHandlerTest < Minitest::Test
+class EndpointTest < Minitest::Test
   include Rack::Test::Methods
 
   def app
@@ -32,6 +32,7 @@ class RequestHandlerTest < Minitest::Test
     get '/repositories.json', nil, headers
     assert_equal 200, last_response.status
     actual = JSON.parse(last_response.body)
+    actual.sort_by!{ |k| k['id'] }
     assert_equal 2, actual.length
     expected = {
         'title'             => 'Mockdusa Test Repository',
@@ -115,6 +116,7 @@ class RequestHandlerTest < Minitest::Test
     get '/collections.json', nil, headers
     assert_equal 200, last_response.status
     actual = JSON.parse(last_response.body)
+    actual.sort_by!{ |k| k['id'] }
     assert_equal 2, actual.length
     expected = {
         'id'   => 1,
@@ -281,12 +283,118 @@ class RequestHandlerTest < Minitest::Test
             }
         ]
     }
+    actual = JSON.parse(last_response.body)
     # convert arrays into sets for unordered equality
-    expected['subdirectories'] = Set.new(expected['subdirectories'])
-    expected['files']          = Set.new(expected['files'])
-    actual                   = JSON.parse(last_response.body)
-    actual['subdirectories'] = Set.new(actual['subdirectories'])
-    actual['files']          = Set.new(actual['files'])
+    convert_arrays_to_sets(expected)
+    convert_arrays_to_sets(actual)
+    assert_equal expected, actual
+  end
+
+  # /cfs_directories/:id/show_tree
+
+  def test_directory_tree_without_authentication
+    get '/cfs_directories/99999/show_tree'
+    assert_equal 401, last_response.status
+  end
+
+  def test_invalid_directory_tree_json
+    get '/cfs_directories/99999/show_tree.json', nil, headers
+    assert_equal 404, last_response.status
+  end
+
+  def test_directory_tree_html
+    get '/cfs_directories/30193726375172/show_tree', nil, headers
+    assert_equal 406, last_response.status
+  end
+
+  def test_directory_tree_json
+    get '/cfs_directories/30193726375172/show_tree.json', nil, headers
+    assert_equal 200, last_response.status
+    expected = {
+        'id'          => 30193726375172,
+        'uuid'        => '1b760655-c504-7fce-f171-76e4234844da',
+        'name'        => 'root',
+        'parent_id'   => 1,
+        'parent_type' => 'FileGroup',
+        'files'       => [
+            {
+                'id'                => 240067872391336,
+                'uuid'              => 'da572841-80a8-86fb-48eb-6ba18ade48ef',
+                'name'              => 'escher_lego.jpg',
+                'content_type'      => 'unknown/unknown',
+                'md5_sum'           => '00000000000000000000000000000000',
+                'size'              => 28399,
+                'mtime'             => '2020-01-01T10:05:30Z',
+                'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/escher_lego.jpg'
+            }
+        ],
+        'subdirectories' => [
+            {
+                'id'             => 175789411019744,
+                'uuid'           => '9fe12966-2be0-e43d-fe3b-8bbbe3c99c90',
+                'name'           => 'empty_dir',
+                'parent_id'      => 30193726375172,
+                'parent_type'    => 'CfsDirectory',
+                'files'          => [],
+                'subdirectories' => []
+            },
+            {
+                'id'             => 118181527816155,
+                'uuid'           => '6b7c47fc-07db-ec4e-9ee8-c87f60611b6a',
+                'name'           => 'subdir',
+                'parent_id'      => 30193726375172,
+                'parent_type'    => 'CfsDirectory',
+                'files'          => [
+                    {
+                        'id'                => 242962082129794,
+                        'uuid'              => 'dcf90499-6782-824c-5283-2ce30cdd42ae',
+                        'name'              => 'hello.txt',
+                        'content_type'      => 'unknown/unknown',
+                        'md5_sum'           => '00000000000000000000000000000000',
+                        'size'              => 11,
+                        'mtime'             => '2020-01-01T10:05:30Z',
+                        'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/subdir/hello.txt'
+                    },
+                    {
+                        'id'                => 14635739342178,
+                        'uuid'              => '0d4fa60b-6562-5fd5-27f2-5e25476945bf',
+                        'name'              => 'hello2.txt',
+                        'content_type'      => 'unknown/unknown',
+                        'md5_sum'           => '00000000000000000000000000000000',
+                        'size'              => 17,
+                        'mtime'             => '2020-01-01T10:05:30Z',
+                        'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/subdir/hello2.txt'
+                    }
+                ],
+                'subdirectories' => [
+                    {
+                        'id'             => 203392051844673,
+                        'uuid'           => 'b8fbe700-1641-be76-0aad-a3d62a1ec6f0',
+                        'name'           => 'sub_subdir',
+                        'parent_id'      => 118181527816155,
+                        'parent_type'    => 'CfsDirectory',
+                        'files'          => [
+                            {
+                                'id'                => 130619876552293,
+                                'uuid'              => '76cc4f57-ae65-0600-c6ff-e5b199472deb',
+                                'name'              => 'hello3.txt',
+                                'content_type'      => 'unknown/unknown',
+                                'md5_sum'           => '00000000000000000000000000000000',
+                                'size'              => 21,
+                                'mtime'             => '2020-01-01T10:05:30Z',
+                                'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/subdir/sub_subdir/hello3.txt'
+                            }
+                        ],
+                        'subdirectories' => []
+                    }
+                ]
+            }
+        ]
+    }
+    actual = JSON.parse(last_response.body)
+    # convert arrays into sets for unordered equality
+    convert_arrays_to_sets(expected)
+    convert_arrays_to_sets(actual)
     assert_equal expected, actual
   end
 
@@ -387,6 +495,20 @@ class RequestHandlerTest < Minitest::Test
 
 
   private
+
+  def convert_arrays_to_sets(hash)
+    return unless hash.kind_of?(Hash)
+    hash.keys.each do |key|
+      if hash[key].kind_of?(Array)
+        hash[key].each do |element|
+          convert_arrays_to_sets(element)
+        end
+        hash[key] = Set.new(hash[key])
+      else
+        convert_arrays_to_sets(hash[key])
+      end
+    end
+  end
 
   def headers(options = {})
     { 'HTTP_AUTHORIZATION' => "Basic " + Base64::encode64("medusa:secret") }

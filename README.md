@@ -28,6 +28,7 @@ root.
 * `/collections/:id.json`
 * `/file_groups/:id.json`
 * `/cfs_directories/:id.json`
+* `/cfs_directories/:id/show_tree.json`
 * `/cfs_files/:id.json`
 * `/uuids/:uuid.json`
 
@@ -72,6 +73,14 @@ and the secret is `secret`.
 
 # Testing
 
+## Locally
+
 ```sh
 $ rake test
+```
+
+# In Docker
+
+```sh
+$ docker build -t mockdusa . ; docker run --entrypoint rake mockdusa test
 ```

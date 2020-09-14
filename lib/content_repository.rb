@@ -3,7 +3,8 @@ require 'yaml'
 
 class ContentRepository
 
-  DEFAULT_TIME = '2020-01-01T10:05:30Z'
+  DEFAULT_TIME  = '2020-01-01T10:05:30Z'
+  IGNORED_FILES = %w(.DS_Store .keep Thumbs.db)
 
   ##
   # @param uuid [String]
@@ -90,7 +91,7 @@ class ContentRepository
           files:             []
       }
       Dir.glob(File.join(path, '*')) do |subpath|
-        next if %w(.keep).include?(File.basename(subpath))
+        next if IGNORED_FILES.include?(File.basename(subpath))
         relative_subpath = subpath.gsub(root, '')
         node_id          = idify(relative_subpath)
         node_uuid        = uuidify(relative_subpath)
@@ -116,6 +117,16 @@ class ContentRepository
         end
       end
       return dir
+    end
+    nil
+  end
+
+  def directory_tree(id)
+    id = id.to_i
+    Dir.glob(File.join(root, '/repositories/*/collections/*/file_groups/*/**/*')) do |root_path|
+      relative_root_path = root_path.gsub(root, '')
+      dir_id             = idify(relative_root_path)
+      return assemble_tree(root_path) if dir_id == id
     end
     nil
   end
@@ -227,6 +238,45 @@ class ContentRepository
 
 
   private
+
+  def assemble_tree(dir_path)
+    relative_path         = dir_path.gsub(root, '')
+    tree                  = {}
+    tree[:id]             = idify(relative_path)
+    tree[:uuid]           = uuidify(relative_path)
+    tree[:name]           = File.basename(relative_path)
+    path_parts            = relative_path.split('/')
+    path_parts.pop
+    parent_relative_path  = path_parts.join('/')
+    if parent_relative_path.match?(/file_groups\/\d$/)
+      tree[:parent_id]    = path_parts[path_parts.length - 1].to_i
+      tree[:parent_type]  = 'FileGroup'
+    else
+      tree[:parent_id]    = idify(parent_relative_path)
+      tree[:parent_type]  = 'CfsDirectory'
+    end
+    tree[:files]          = []
+    tree[:subdirectories] = []
+
+    Dir.glob(File.join(dir_path, '*')) do |subpath|
+      if File.directory?(subpath)
+        tree[:subdirectories] << assemble_tree(subpath)
+      elsif !IGNORED_FILES.include?(File.basename(subpath))
+        relative_subpath = subpath.gsub(root, '')
+        tree[:files] << {
+            id:                idify(relative_subpath),
+            uuid:              uuidify(relative_subpath),
+            name:              File.basename(subpath),
+            content_type:      'unknown/unknown',
+            md5_sum:           '0' * 32,
+            size:              File.size(subpath),
+            mtime:             DEFAULT_TIME,
+            relative_pathname: relative_subpath[1..-1]
+        }
+      end
+    end
+    tree
+  end
 
   ##
   # @return [Integer] Stable integer corresponding to the given string.
