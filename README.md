@@ -22,7 +22,9 @@ root.
 
 # Mocked endpoints
 
+* `/repositories.json`
 * `/repositories/:id.json`
+* `/collections.json`
 * `/collections/:id.json`
 * `/file_groups/:id.json`
 * `/cfs_directories/:id.json`

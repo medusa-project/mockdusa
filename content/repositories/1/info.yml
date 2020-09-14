@@ -2,6 +2,13 @@
 
 title:             Mockdusa Test Repository
 url:               https://github.com/medusa-project/mockdusa
+notes:             This repository contains Mockdusa test content.
+address_1:         123 Anywhere St.
+address_2:         Room 422
+city:              Urbana
+state:             IL
+zip:               61820
+phone_number:      (555) 555-5555
 contact_email:     alexd@illinois.edu
 email:             alexd@illinois.edu
 ldap_admin_domain: uofi

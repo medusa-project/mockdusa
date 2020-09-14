@@ -31,6 +31,20 @@ class ContentRepository
     nil
   end
 
+  def collections
+    collections = []
+    Dir.glob(File.join(root, '/repositories/*/collections/*')) do |collection_path|
+      parts                    = collection_path.split('/')
+      relative_collection_path = collection_path.gsub(root, '')
+      collection               = {}
+      collection[:id]          = parts[parts.length - 1].to_i
+      collection[:uuid]        = uuidify(relative_collection_path)
+      collection[:path]        = "/collections/#{collection[:id]}"
+      collections << collection
+    end
+    collections
+  end
+
   def collection(id)
     id = id.to_i
     Dir.glob(File.join(root, '/repositories/*/collections/*')) do |collection_path|
@@ -161,6 +175,24 @@ class ContentRepository
     nil
   end
 
+  def repositories
+    repositories = []
+    Dir.glob(File.join(root, 'repositories', '*')) do |repo_path|
+      relative_path = repo_path.gsub(root, '')
+      info_path     = File.join(repo_path, 'info.yml')
+      if File.exist?(info_path)
+        repo = ::YAML.load(File.read(info_path))
+      else
+        repo = {}
+      end
+      repo['id']   = relative_path.split('/').last.to_i
+      repo['uuid'] = uuidify(relative_path)
+      %w(ldap_admin_domain).each { |k| repo.delete(k) }
+      repositories << repo
+    end
+    repositories
+  end
+
   def repository(id)
     id            = id.to_i
     path          = File.join(root, 'repositories', id.to_s)
@@ -179,6 +211,7 @@ class ContentRepository
         collection['path']   = "/collections/#{collection['id']}.json"
         repo['collections'] << collection
       end
+      %w(notes address_1 address_2 city state zip phone_number).each { |k| repo.delete(k) }
       repo
     else
       nil

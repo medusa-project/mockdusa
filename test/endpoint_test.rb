@@ -15,6 +15,43 @@ class RequestHandlerTest < Minitest::Test
     assert_equal 200, last_response.status
   end
 
+  # /repositories
+
+  def test_repositories_without_authentication
+    get '/repositories'
+    assert_equal 401, last_response.status
+  end
+
+  def test_repositories_html
+    get '/repositories', nil, headers
+    assert_equal 200, last_response.status
+    assert_equal 'All Repositories', last_response.body
+  end
+
+  def test_repositories_json
+    get '/repositories.json', nil, headers
+    assert_equal 200, last_response.status
+    actual = JSON.parse(last_response.body)
+    assert_equal 2, actual.length
+    expected = {
+        'title'             => 'Mockdusa Test Repository',
+        'url'               => 'https://github.com/medusa-project/mockdusa',
+        'notes'             => 'This repository contains Mockdusa test content.',
+        'address_1'         => '123 Anywhere St.',
+        'address_2'         => 'Room 422',
+        'city'              => 'Urbana',
+        'state'             => 'IL',
+        'zip'               => 61820,
+        'phone_number'      => '(555) 555-5555',
+        'contact_email'     => 'alexd@illinois.edu',
+        'email'             => 'alexd@illinois.edu',
+        'ldap_admin_group'  => 'Some Group',
+        'id'                => 1,
+        'uuid'              => '40b62a2d-209f-292a-b1fc-4818b3321e6a'
+    }
+    assert_equal expected, actual[0]
+  end
+
   # /repositories/:id
 
   def test_repository_without_authentication
@@ -59,6 +96,32 @@ class RequestHandlerTest < Minitest::Test
         ]
     }
     assert_equal expected, JSON.parse(last_response.body)
+  end
+
+  # /collections
+
+  def test_collections_without_authentication
+    get '/collections'
+    assert_equal 401, last_response.status
+  end
+
+  def test_collections_html
+    get '/collections', nil, headers
+    assert_equal 200, last_response.status
+    assert_equal 'All Collections', last_response.body
+  end
+
+  def test_collections_json
+    get '/collections.json', nil, headers
+    assert_equal 200, last_response.status
+    actual = JSON.parse(last_response.body)
+    assert_equal 2, actual.length
+    expected = {
+        'id'   => 1,
+        'uuid' => '81a13f45-d149-3dd7-f233-53cc395217fa',
+        'path' => '/collections/1'
+    }
+    assert_equal expected, actual[0]
   end
 
   # /collections/:id

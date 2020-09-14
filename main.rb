@@ -12,6 +12,16 @@ get '/' do
   '<h1>Welcome to Mockdusa</h1>'
 end
 
+get /\/repositories/ do
+  "All Repositories"
+end
+
+get /\/repositories.json/ do
+  repos = ContentRepository.new.repositories
+  headers 'Content-Type' => 'application/json'
+  body JSON.generate(repos)
+end
+
 get /\/repositories\/(\d+)/ do
   repo = ContentRepository.new.repository(params['captures'].first)
   if repo
@@ -27,15 +37,23 @@ get /\/repositories\/(\d+).json/ do
   repo = ContentRepository.new.repository(params['captures'].first)
   if repo
     status 200
-    headers \
-        'Content-Type' => 'application/json'
+    headers 'Content-Type' => 'application/json'
     body JSON.generate(repo)
   else
     status 404
-    headers \
-        'Content-Type' => 'application/json'
+    headers 'Content-Type' => 'application/json'
     body JSON.generate({ 'status': 404, 'error': "Not Found" })
   end
+end
+
+get /\/collections/ do
+  "All Collections"
+end
+
+get /\/collections.json/ do
+  collections = ContentRepository.new.collections
+  headers 'Content-Type' => 'application/json'
+  body JSON.generate(collections)
 end
 
 get /\/collections\/(\d+)/ do
@@ -53,13 +71,11 @@ get /\/collections\/(\d+).json/ do
   collection = ContentRepository.new.collection(params['captures'].first)
   if collection
     status 200
-    headers \
-        'Content-Type' => 'application/json'
+    headers 'Content-Type' => 'application/json'
     body JSON.generate(collection)
   else
     status 404
-    headers \
-        'Content-Type' => 'application/json'
+    headers 'Content-Type' => 'application/json'
     body JSON.generate({ 'status': 404, 'error': "Not Found" })
   end
 end
@@ -79,13 +95,11 @@ get /\/file_groups\/(\d+).json/ do
   file_group = ContentRepository.new.file_group(params['captures'].first)
   if file_group
     status 200
-    headers \
-        'Content-Type' => 'application/json'
+    headers 'Content-Type' => 'application/json'
     body JSON.generate(file_group)
   else
     status 404
-    headers \
-        'Content-Type' => 'application/json'
+    headers 'Content-Type' => 'application/json'
     body JSON.generate({ 'status': 404, 'error': "Not Found" })
   end
 end
@@ -131,13 +145,11 @@ get /\/cfs_files\/(\d+).json/ do
   file = ContentRepository.new.file(params['captures'].first)
   if file
     status 200
-    headers \
-        'Content-Type' => 'application/json'
+    headers 'Content-Type' => 'application/json'
     body JSON.generate(file)
   else
     status 404
-    headers \
-        'Content-Type' => 'application/json'
+    headers 'Content-Type' => 'application/json'
     body JSON.generate({ 'status': 404, 'error': "Not Found" })
   end
 end
@@ -158,8 +170,7 @@ get /\/uuids\/([a-z0-9-]+).json/ do
     redirect "#{path}.json", 302
   else
     status 404
-    headers \
-        'Content-Type' => 'application/json'
+    headers 'Content-Type' => 'application/json'
     body JSON.generate({ 'status': 404, 'error': "Not Found" })
   end
 end
