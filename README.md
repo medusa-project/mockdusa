@@ -75,6 +75,31 @@ and the secret is `secret`.
 
 ## With Docker
 
+```sh
+$ docker build -t mockdusa .
+$ docker run mockdusa
+```
+Mockdusa is now listening on port 4567 and using the same HTTP Basic
+credentials as above.
+
+Mockdusa can also run as a docker-compose service. The `scripts/ecr_push.sh`
+script is used to push it to AWS ECR. That image can then be referred to in a 
+`docker-compose.yml` file:
+
+```yaml
+version: '3'
+services:
+  mockdusa:
+    image: 721945215539.dkr.ecr.us-east-2.amazonaws.com/mockdusa:latest
+    hostname: mockdusa
+  # other services...
+```
+Other services can then connect to `http://mockdusa`.
+
+To obtain credentials to access that image, we (at UIUC) would log into AWS
+using the `aws login` command (which is provided by the `awscli_login` egg,
+e.g. `pip install awscli_login`.)
+
 # Testing
 
 ## Locally
