@@ -270,7 +270,7 @@ class EndpointTest < Minitest::Test
     assert_equal 'Directory 30193726375172', last_response.body
   end
 
-  def test_directory_json
+  def test_directory_json_of_file_group_root_directory
     get '/cfs_directories/30193726375172.json', nil, headers
     assert_equal 200, last_response.status
     expected = {
@@ -304,12 +304,30 @@ class EndpointTest < Minitest::Test
                 'path'              => '/cfs_files/240067872391336.json',
                 'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root'
             }
-        ],
+        ]
+    }
+    actual = JSON.parse(last_response.body)
+    # convert arrays into sets for unordered equality
+    convert_arrays_to_sets(expected)
+    convert_arrays_to_sets(actual)
+    assert_equal expected, actual
+  end
+
+  def test_directory_json_of_subdirectory
+    get '/cfs_directories/175789411019744.json', nil, headers
+    assert_equal 200, last_response.status
+    expected = {
+        'id'                => 175789411019744,
+        'uuid'              => '9fe12966-2be0-e43d-fe3b-8bbbe3c99c90',
+        'name'              => 'empty_dir',
+        'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/empty_dir',
+        'subdirectories'    => [],
+        'files' => [],
         'parent_directory' => {
-            'id'   => 97314636459454,
-            'name' => '1',
-            'path' => '/cfs_directories/97314636459454',
-            'uuid' => '5881d456-6dbe-90f1-ac81-7e0bf53e9c84'
+            'id'   => 30193726375172,
+            'name' => 'root',
+            'path' => '/cfs_directories/30193726375172',
+            'uuid' => '1b760655-c504-7fce-f171-76e4234844da'
         }
     }
     actual = JSON.parse(last_response.body)

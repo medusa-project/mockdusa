@@ -82,27 +82,15 @@ class ContentRepository
       relative_dir_path = path.gsub(root, '')
       dir_id            = idify(relative_dir_path)
       next unless dir_id == id
-
-      path_parts           = path.split('/')
-      path_parts.pop
-      parent_path          = path_parts.join('/')
-      relative_parent_path = parent_path.gsub(root, '')
-      parent_id            = idify(relative_parent_path)
       dir = {
           id:                dir_id,
           uuid:              uuidify(relative_dir_path),
           name:              File.basename(relative_dir_path),
           relative_pathname: path.gsub(root, '')[1..-1],
           subdirectories:    [],
-          files:             [],
-          parent_directory:  {
-              id:   parent_id,
-              name: File.basename(parent_path),
-              path: "/cfs_directories/#{parent_id}",
-              uuid: uuidify(relative_parent_path)
-          }
+          files:             []
       }
-      # Fill in subdirectories and files
+      # Fill in subdirectories and files arrays
       Dir.glob(File.join(path, '*')) do |subpath|
         next if IGNORED_FILES.include?(File.basename(subpath))
         relative_subpath = subpath.gsub(root, '')
@@ -128,6 +116,20 @@ class ContentRepository
               relative_pathname: relative_dir_path[1..-1]
           }
         end
+      end
+      # Fill in parent directory, if not a root directory of a file group
+      path_parts = path.split('/')
+      path_parts.pop
+      if path_parts[path_parts.length - 2] != 'file_groups'
+        parent_path          = path_parts.join('/')
+        relative_parent_path = parent_path.gsub(root, '')
+        parent_id            = idify(relative_parent_path)
+        dir[:parent_directory] = {
+            id:   parent_id,
+            name: File.basename(parent_path),
+            path: "/cfs_directories/#{parent_id}",
+            uuid: uuidify(relative_parent_path)
+        }
       end
       return dir
     end
