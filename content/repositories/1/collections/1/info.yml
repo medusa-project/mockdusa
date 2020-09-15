@@ -1,8 +1,8 @@
 # Collection info
 
-title:                   Some Collection
-description:             Lorem ipsum dolor sit amet
-description_html:        <p>Lorem ipsum dolor sit amet</p>
+title:                   Mockdusa Test Collection
+description:             This collection contains Mockdusa test content.
+description_html:        <p>This collection contains Mockdusa test content.</p>
 access_url:              https://example.org/
 physical_collection_url:
 publish:                 true

@@ -90,7 +90,7 @@ class EndpointTest < Minitest::Test
         'uuid'              => '40b62a2d-209f-292a-b1fc-4818b3321e6a',
         'collections'       => [
             {
-                'title' => 'Some Collection',
+                'title' => 'Mockdusa Test Collection',
                 'id'    => 1,
                 'path'  =>'/collections/1.json'
             }
@@ -153,34 +153,34 @@ class EndpointTest < Minitest::Test
     get '/collections/1.json', nil, headers
     assert_equal 200, last_response.status
     expected = {
-        'title' => 'Some Collection',
-        'description' => 'Lorem ipsum dolor sit amet',
-        'description_html' => '<p>Lorem ipsum dolor sit amet</p>',
-        'access_url' => 'https://example.org/',
+        'title'                   => 'Mockdusa Test Collection',
+        'description'             => 'This collection contains Mockdusa test content.',
+        'description_html'        => '<p>This collection contains Mockdusa test content.</p>',
+        'access_url'              => 'https://example.org/',
         'physical_collection_url' => nil,
-        'publish' => true,
-        'representative_image' => nil,
-        'representative_item' => nil,
-        'external_id' => nil,
-        'contact_email' => 'alexd@illinois.edu',
-        'private_description' => nil,
-        'id' => 1,
-        'uuid' => '81a13f45-d149-3dd7-f233-53cc395217fa',
-        'repository_path' => '/repositories/1',
-        'repository_title' => 'Mockdusa Test Repository',
-        'repository_uuid' => '40b62a2d-209f-292a-b1fc-4818b3321e6a',
-        'file_groups' => [
+        'publish'                 => true,
+        'representative_image'    => nil,
+        'representative_item'     => nil,
+        'external_id'             => nil,
+        'contact_email'           => 'alexd@illinois.edu',
+        'private_description'     => nil,
+        'id'                      => 1,
+        'uuid'                    => '81a13f45-d149-3dd7-f233-53cc395217fa',
+        'repository_path'         => '/repositories/1',
+        'repository_title'        => 'Mockdusa Test Repository',
+        'repository_uuid'         => '40b62a2d-209f-292a-b1fc-4818b3321e6a',
+        'file_groups'             => [
             {
-                'title' => 'Content',
+                'title'         => 'Content',
                 'storage_level' => 'bit_level',
-                'id' => 1,
-                'path' => '/file_groups/1.json'
+                'id'            => 1,
+                'path'          => '/file_groups/1.json'
             },
             {
-                'title' => 'External Content',
+                'title'         => 'External Content',
                 'storage_level' => 'external',
-                'id' => 2,
-                'path' => '/file_groups/2.json'
+                'id'            => 2,
+                'path'          => '/file_groups/2.json'
             }
         ]
     }
