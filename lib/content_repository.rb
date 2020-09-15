@@ -82,14 +82,27 @@ class ContentRepository
       relative_dir_path = path.gsub(root, '')
       dir_id            = idify(relative_dir_path)
       next unless dir_id == id
+
+      path_parts           = path.split('/')
+      path_parts.pop
+      parent_path          = path_parts.join('/')
+      relative_parent_path = parent_path.gsub(root, '')
+      parent_id            = idify(relative_parent_path)
       dir = {
           id:                dir_id,
           uuid:              uuidify(relative_dir_path),
           name:              File.basename(relative_dir_path),
           relative_pathname: path.gsub(root, '')[1..-1],
           subdirectories:    [],
-          files:             []
+          files:             [],
+          parent_directory:  {
+              id:   parent_id,
+              name: File.basename(parent_path),
+              path: "/cfs_directories/#{parent_id}",
+              uuid: uuidify(relative_parent_path)
+          }
       }
+      # Fill in subdirectories and files
       Dir.glob(File.join(path, '*')) do |subpath|
         next if IGNORED_FILES.include?(File.basename(subpath))
         relative_subpath = subpath.gsub(root, '')

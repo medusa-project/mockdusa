@@ -304,7 +304,13 @@ class EndpointTest < Minitest::Test
                 'path'              => '/cfs_files/240067872391336.json',
                 'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root'
             }
-        ]
+        ],
+        'parent_directory' => {
+            'id'   => 97314636459454,
+            'name' => '1',
+            'path' => '/cfs_directories/97314636459454',
+            'uuid' => '5881d456-6dbe-90f1-ac81-7e0bf53e9c84'
+        }
     }
     actual = JSON.parse(last_response.body)
     # convert arrays into sets for unordered equality
