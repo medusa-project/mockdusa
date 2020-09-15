@@ -173,14 +173,16 @@ class ContentRepository
       file_group['id']            = file_group_id
       file_group['uuid']          = uuidify(relative_fg_path)
       file_group['collection_id'] = parts[parts.length - 3].to_i
-      relative_dir_path           = File.join(file_group_path, 'root').gsub(root, '')
-      dir_id                      = idify(relative_dir_path)
-      file_group['cfs_directory'] = {
-          'id':   dir_id,
-          'name': 'root',
-          'path': "/cfs_directories/#{dir_id}.json",
-          'uuid': uuidify(relative_dir_path)
-      }
+      if file_group['storage_level'] == 'bit_level'
+        relative_dir_path           = File.join(file_group_path, 'root').gsub(root, '')
+        dir_id                      = idify(relative_dir_path)
+        file_group['cfs_directory'] = {
+            'id':   dir_id,
+            'name': 'root',
+            'path': "/cfs_directories/#{dir_id}.json",
+            'uuid': uuidify(relative_dir_path)
+        }
+      end
       return file_group
     end
     nil

@@ -175,10 +175,19 @@ class EndpointTest < Minitest::Test
                 'storage_level' => 'bit_level',
                 'id' => 1,
                 'path' => '/file_groups/1.json'
+            },
+            {
+                'title' => 'External Content',
+                'storage_level' => 'external',
+                'id' => 2,
+                'path' => '/file_groups/2.json'
             }
         ]
     }
-    assert_equal expected, JSON.parse(last_response.body)
+    actual = JSON.parse(last_response.body)
+    convert_arrays_to_sets(expected)
+    convert_arrays_to_sets(actual)
+    assert_equal expected, actual
   end
 
   # /file_groups/:id
@@ -204,7 +213,7 @@ class EndpointTest < Minitest::Test
     assert_equal 'File group 1', last_response.body
   end
 
-  def test_file_group_json
+  def test_file_group_json_with_bit_level_file_group
     get '/file_groups/1.json', nil, headers
     assert_equal 200, last_response.status
     expected = {
@@ -220,6 +229,20 @@ class EndpointTest < Minitest::Test
             'path' => '/cfs_directories/30193726375172.json',
             'uuid' => '1b760655-c504-7fce-f171-76e4234844da',
         }
+    }
+    assert_equal expected, JSON.parse(last_response.body)
+  end
+
+  def test_file_group_json_with_external_file_group
+    get '/file_groups/2.json', nil, headers
+    assert_equal 200, last_response.status
+    expected = {
+        'title'                  => 'External Content',
+        'external_file_location' => '\\\\\\\\example.org\\\\Files',
+        'storage_level'          => 'external',
+        'id'                     => 2,
+        'uuid'                   => 'bda7c8a5-4e8a-8771-5b3c-5dc51ab75c0c',
+        'collection_id'          => 1
     }
     assert_equal expected, JSON.parse(last_response.body)
   end

@@ -1,0 +1,5 @@
+# File group info
+
+title:                  External Content
+external_file_location: \\\\example.org\\Files
+storage_level:          external
