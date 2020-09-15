@@ -255,23 +255,24 @@ class ContentRepository
   private
 
   def assemble_tree(dir_path)
-    relative_path         = dir_path.gsub(root, '')
-    tree                  = {}
-    tree[:id]             = idify(relative_path)
-    tree[:uuid]           = uuidify(relative_path)
-    tree[:name]           = File.basename(relative_path)
-    path_parts            = relative_path.split('/')
+    relative_path            = dir_path.gsub(root, '')
+    tree                     = {}
+    tree[:id]                = idify(relative_path)
+    tree[:uuid]              = uuidify(relative_path)
+    tree[:name]              = File.basename(relative_path)
+    path_parts               = relative_path.split('/')
     path_parts.pop
-    parent_relative_path  = path_parts.join('/')
+    parent_relative_path     = path_parts.join('/')
     if parent_relative_path.match?(/file_groups\/\d$/)
-      tree[:parent_id]    = path_parts[path_parts.length - 1].to_i
-      tree[:parent_type]  = 'FileGroup'
+      tree[:parent_id]       = path_parts[path_parts.length - 1].to_i
+      tree[:parent_type]     = 'FileGroup'
     else
-      tree[:parent_id]    = idify(parent_relative_path)
-      tree[:parent_type]  = 'CfsDirectory'
+      tree[:parent_id]       = idify(parent_relative_path)
+      tree[:parent_type]     = 'CfsDirectory'
     end
-    tree[:files]          = []
-    tree[:subdirectories] = []
+    tree[:files]             = []
+    tree[:subdirectories]    = []
+    tree[:relative_pathname] = relative_path[1..-1]
 
     Dir.glob(File.join(dir_path, '*')) do |subpath|
       if File.directory?(subpath)

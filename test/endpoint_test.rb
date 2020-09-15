@@ -359,13 +359,14 @@ class EndpointTest < Minitest::Test
         ],
         'subdirectories' => [
             {
-                'id'             => 175789411019744,
-                'uuid'           => '9fe12966-2be0-e43d-fe3b-8bbbe3c99c90',
-                'name'           => 'empty_dir',
-                'parent_id'      => 30193726375172,
-                'parent_type'    => 'CfsDirectory',
-                'files'          => [],
-                'subdirectories' => []
+                'id'                => 175789411019744,
+                'uuid'              => '9fe12966-2be0-e43d-fe3b-8bbbe3c99c90',
+                'name'              => 'empty_dir',
+                'parent_id'         => 30193726375172,
+                'parent_type'       => 'CfsDirectory',
+                'files'             => [],
+                'subdirectories'    => [],
+                'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/empty_dir'
             },
             {
                 'id'             => 118181527816155,
@@ -397,12 +398,12 @@ class EndpointTest < Minitest::Test
                 ],
                 'subdirectories' => [
                     {
-                        'id'             => 203392051844673,
-                        'uuid'           => 'b8fbe700-1641-be76-0aad-a3d62a1ec6f0',
-                        'name'           => 'sub_subdir',
-                        'parent_id'      => 118181527816155,
-                        'parent_type'    => 'CfsDirectory',
-                        'files'          => [
+                        'id'                => 203392051844673,
+                        'uuid'              => 'b8fbe700-1641-be76-0aad-a3d62a1ec6f0',
+                        'name'              => 'sub_subdir',
+                        'parent_id'         => 118181527816155,
+                        'parent_type'       => 'CfsDirectory',
+                        'files'             => [
                             {
                                 'id'                => 130619876552293,
                                 'uuid'              => '76cc4f57-ae65-0600-c6ff-e5b199472deb',
@@ -414,11 +415,14 @@ class EndpointTest < Minitest::Test
                                 'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/subdir/sub_subdir/hello3.txt'
                             }
                         ],
-                        'subdirectories' => []
+                        'subdirectories'    => [],
+                        'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/subdir/sub_subdir'
                     }
-                ]
+                ],
+                'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/subdir'
             }
-        ]
+        ],
+        'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root'
     }
     actual = JSON.parse(last_response.body)
     # convert arrays into sets for unordered equality
