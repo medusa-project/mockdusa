@@ -10,13 +10,11 @@ RUN mkdir app
 WORKDIR app
 
 COPY Gemfile Gemfile.lock ./
-RUN gem install bundler \
-    && bundle config set without 'development' \
-    && bundle install --jobs 20 --retry 5
+RUN gem install bundler && bundle install --jobs 20 --retry 5
 
 # Copy everything else except whatever is listed in .dockerignore.
 COPY . ./
 
 EXPOSE 4567
 
-CMD ["ruby", "main.rb"]
+CMD ["bundle", "exec", "rackup", "--host", "0.0.0.0", "-p", "4567"]

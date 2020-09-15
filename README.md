@@ -64,12 +64,16 @@ with ID 1 has been claimed by Mockdusa for its own tests.
 
 # Getting started
 
+## Locally
+
 ```sh
 $ bundle install
-$ ruby main.rb
+$ bundle exec rackup
 ```
 Mockdusa is now listening on port 4567. The HTTP Basic username is `medusa`
 and the secret is `secret`.
+
+## With Docker
 
 # Testing
 
@@ -79,7 +83,7 @@ and the secret is `secret`.
 $ rake test
 ```
 
-# In Docker
+## In Docker
 
 ```sh
 $ docker build -t mockdusa . ; docker run --entrypoint rake mockdusa test
