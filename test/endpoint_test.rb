@@ -224,9 +224,9 @@ class EndpointTest < Minitest::Test
         'uuid'                   => '5881d456-6dbe-90f1-ac81-7e0bf53e9c84',
         'collection_id'          => 1,
         'cfs_directory'          => {
-            'id'   => 30193726375172,
+            'id'   => 460719701,
             'name' => 'root',
-            'path' => '/cfs_directories/30193726375172.json',
+            'path' => '/cfs_directories/460719701.json',
             'uuid' => '1b760655-c504-7fce-f171-76e4234844da',
         }
     }
@@ -265,43 +265,43 @@ class EndpointTest < Minitest::Test
   end
 
   def test_directory_html
-    get '/cfs_directories/30193726375172', nil, headers
+    get '/cfs_directories/460719701', nil, headers
     assert_equal 200, last_response.status
-    assert_equal 'Directory 30193726375172', last_response.body
+    assert_equal 'Directory 460719701', last_response.body
   end
 
   def test_directory_json_of_file_group_root_directory
-    get '/cfs_directories/30193726375172.json', nil, headers
+    get '/cfs_directories/460719701.json', nil, headers
     assert_equal 200, last_response.status
     expected = {
-        'id'                => 30193726375172,
+        'id'                => 460719701,
         'uuid'              => '1b760655-c504-7fce-f171-76e4234844da',
         'name'              => 'root',
         'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root',
         'subdirectories'    => [
             {
-                'id'   => 175789411019744,
+                'id'   => 2682333542,
                 'uuid' => '9fe12966-2be0-e43d-fe3b-8bbbe3c99c90',
                 'name' => 'empty_dir',
-                'path' => '/cfs_directories/175789411019744.json'
+                'path' => '/cfs_directories/2682333542.json'
             },
             {
-                'id'   => 118181527816155,
+                'id'   => 1803307004,
                 'uuid' => '6b7c47fc-07db-ec4e-9ee8-c87f60611b6a',
                 'name' => 'subdir',
-                'path' => '/cfs_directories/118181527816155.json'
+                'path' => '/cfs_directories/1803307004.json'
             }
         ],
         'files' => [
             {
-                'id'                => 240067872391336,
+                'id'                => 3663145025,
                 'name'              => 'escher_lego.jpg',
                 'md5_sum'           => '00000000000000000000000000000000',
                 'uuid'              => 'da572841-80a8-86fb-48eb-6ba18ade48ef',
                 'content_type'      => 'unknown/unknown',
                 'size'              => 28399,
                 'mtime'             => '2020-01-01T10:05:30Z',
-                'path'              => '/cfs_files/240067872391336.json',
+                'path'              => '/cfs_files/3663145025.json',
                 'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root'
             }
         ]
@@ -314,19 +314,19 @@ class EndpointTest < Minitest::Test
   end
 
   def test_directory_json_of_subdirectory
-    get '/cfs_directories/175789411019744.json', nil, headers
+    get '/cfs_directories/2682333542.json', nil, headers
     assert_equal 200, last_response.status
     expected = {
-        'id'                => 175789411019744,
+        'id'                => 2682333542,
         'uuid'              => '9fe12966-2be0-e43d-fe3b-8bbbe3c99c90',
         'name'              => 'empty_dir',
         'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/empty_dir',
         'subdirectories'    => [],
         'files' => [],
         'parent_directory' => {
-            'id'   => 30193726375172,
+            'id'   => 460719701,
             'name' => 'root',
-            'path' => '/cfs_directories/30193726375172',
+            'path' => '/cfs_directories/460719701',
             'uuid' => '1b760655-c504-7fce-f171-76e4234844da'
         }
     }
@@ -355,17 +355,17 @@ class EndpointTest < Minitest::Test
   end
 
   def test_directory_tree_json
-    get '/cfs_directories/30193726375172/show_tree.json', nil, headers
+    get '/cfs_directories/460719701/show_tree.json', nil, headers
     assert_equal 200, last_response.status
     expected = {
-        'id'          => 30193726375172,
+        'id'          => 460719701,
         'uuid'        => '1b760655-c504-7fce-f171-76e4234844da',
         'name'        => 'root',
         'parent_id'   => 1,
         'parent_type' => 'FileGroup',
         'files'       => [
             {
-                'id'                => 240067872391336,
+                'id'                => 3663145025,
                 'uuid'              => 'da572841-80a8-86fb-48eb-6ba18ade48ef',
                 'name'              => 'escher_lego.jpg',
                 'content_type'      => 'unknown/unknown',
@@ -377,24 +377,24 @@ class EndpointTest < Minitest::Test
         ],
         'subdirectories' => [
             {
-                'id'                => 175789411019744,
+                'id'                => 2682333542,
                 'uuid'              => '9fe12966-2be0-e43d-fe3b-8bbbe3c99c90',
                 'name'              => 'empty_dir',
-                'parent_id'         => 30193726375172,
+                'parent_id'         => 460719701,
                 'parent_type'       => 'CfsDirectory',
                 'files'             => [],
                 'subdirectories'    => [],
                 'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/empty_dir'
             },
             {
-                'id'             => 118181527816155,
+                'id'             => 1803307004,
                 'uuid'           => '6b7c47fc-07db-ec4e-9ee8-c87f60611b6a',
                 'name'           => 'subdir',
-                'parent_id'      => 30193726375172,
+                'parent_id'      => 460719701,
                 'parent_type'    => 'CfsDirectory',
                 'files'          => [
                     {
-                        'id'                => 242962082129794,
+                        'id'                => 3707307161,
                         'uuid'              => 'dcf90499-6782-824c-5283-2ce30cdd42ae',
                         'name'              => 'hello.txt',
                         'content_type'      => 'unknown/unknown',
@@ -404,7 +404,7 @@ class EndpointTest < Minitest::Test
                         'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/subdir/hello.txt'
                     },
                     {
-                        'id'                => 14635739342178,
+                        'id'                => 223323659,
                         'uuid'              => '0d4fa60b-6562-5fd5-27f2-5e25476945bf',
                         'name'              => 'hello2.txt',
                         'content_type'      => 'unknown/unknown',
@@ -416,14 +416,14 @@ class EndpointTest < Minitest::Test
                 ],
                 'subdirectories' => [
                     {
-                        'id'                => 203392051844673,
+                        'id'                => 3103516416,
                         'uuid'              => 'b8fbe700-1641-be76-0aad-a3d62a1ec6f0',
                         'name'              => 'sub_subdir',
-                        'parent_id'         => 118181527816155,
+                        'parent_id'         => 1803307004,
                         'parent_type'       => 'CfsDirectory',
                         'files'             => [
                             {
-                                'id'                => 130619876552293,
+                                'id'                => 1993101143,
                                 'uuid'              => '76cc4f57-ae65-0600-c6ff-e5b199472deb',
                                 'name'              => 'hello3.txt',
                                 'content_type'      => 'unknown/unknown',
@@ -467,16 +467,16 @@ class EndpointTest < Minitest::Test
   end
 
   def test_file_html
-    get '/cfs_files/240067872391336', nil, headers
+    get '/cfs_files/3663145025', nil, headers
     assert_equal 200, last_response.status
-    assert_equal 'File 240067872391336', last_response.body
+    assert_equal 'File 3663145025', last_response.body
   end
 
   def test_file_json
-    get '/cfs_files/240067872391336.json', nil, headers
+    get '/cfs_files/3663145025.json', nil, headers
     assert_equal 200, last_response.status
     expected = {
-        'id'                => 240067872391336,
+        'id'                => 3663145025,
         'name'              => 'escher_lego.jpg',
         'md5_sum'           => '00000000000000000000000000000000',
         'uuid'              => 'da572841-80a8-86fb-48eb-6ba18ade48ef',
@@ -485,9 +485,9 @@ class EndpointTest < Minitest::Test
         'mtime'             => '2020-01-01T10:05:30Z',
         'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/escher_lego.jpg',
         'directory'         => {
-            'id'   => 30193726375172,
+            'id'   => 460719701,
             'name' => 'root',
-            'path' => '/cfs_directories/30193726375172',
+            'path' => '/cfs_directories/460719701',
             'uuid' => '1b760655-c504-7fce-f171-76e4234844da'
         }
     }
@@ -533,14 +533,14 @@ class EndpointTest < Minitest::Test
   def test_uuids_with_directory_uuid
     get '/uuids/1b760655-c504-7fce-f171-76e4234844da', nil, headers
     assert_equal 302, last_response.status
-    assert_equal 'http://example.org/cfs_directories/30193726375172',
+    assert_equal 'http://example.org/cfs_directories/460719701',
                  last_response.location
   end
 
   def test_uuids_with_file_uuid
     get '/uuids/da572841-80a8-86fb-48eb-6ba18ade48ef', nil, headers
     assert_equal 302, last_response.status
-    assert_equal 'http://example.org/cfs_files/240067872391336',
+    assert_equal 'http://example.org/cfs_files/3663145025',
                  last_response.location
   end
 

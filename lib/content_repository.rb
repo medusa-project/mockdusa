@@ -297,10 +297,10 @@ class ContentRepository
   end
 
   ##
-  # @return [Integer] Stable integer corresponding to the given string.
+  # @return [Integer] Stable integer (<= 2^32) corresponding to the given string.
   #
   def idify(string)
-    Digest::MD5.hexdigest(string.gsub(root, ''))[0..11].hex
+    Digest::MD5.hexdigest(string.gsub(root, ''))[0..7].hex
   end
 
   ##
