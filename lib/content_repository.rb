@@ -250,7 +250,7 @@ class ContentRepository
   # @return [String]
   #
   def root
-    File.join(__dir__, '..', 'content')
+    ENV['REPOSITORY_ROOT'] || File.join(__dir__, '..', 'content')
   end
 
 

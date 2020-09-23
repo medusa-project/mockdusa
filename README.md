@@ -12,13 +12,15 @@ production Medusa service.
 
 # How it works
 
-The basic idea is that the (`content/`) directory contains various content that
-the HTTP endpoints read and supply on-the-fly. There is no database--UUIDs
+The basic idea is that repository fixture content resides in a directory tree
+that the HTTP endpoints read and supply on-the-fly. There is no database--UUIDs
 (and, for files and directories, IDs) are auto-generated based on relative path
-checksums, so they are stable enough to test against.
+checksums, which are stable enough to test against.
 
-For added realism, configure an S3 server like Minio to use `content/` as its
-root.
+By default, the content directory is located at `./content/`, but the path can
+be overridden using the `REPOSITORY_ROOT` environment variable.
+
+An S3 server can be pointed to this location to simulate S3 access to Medusa.
 
 # Mocked endpoints
 
@@ -51,9 +53,8 @@ content/
             info.yml
 ```
 
-The idea is that each application that wants to test using Mockdusa will create
-its own repository in that tree, and fill it in with content. The repository
-with ID 1 has been claimed by Mockdusa for its own tests.
+An application that wants to test using Mockdusa should create its own content
+directory and set `REPOSITORY_ROOT` to its path.
 
 ## Notes
 
@@ -91,14 +92,18 @@ version: '3'
 services:
   mockdusa:
     image: 721945215539.dkr.ecr.us-east-2.amazonaws.com/mockdusa:latest
-    hostname: mockdusa
+    environment:
+      REPOSITORY_ROOT: /repo
+    volumes:
+      - /path/to/repo/content:/repo:ro
   # other services...
 ```
 Other services can then connect to `http://mockdusa`.
 
 To obtain credentials to access that image, we (at UIUC) would log into AWS
 using the `aws login` command (which is provided by the `awscli_login` egg,
-e.g. `pip install awscli_login`.)
+e.g. `pip install awscli_login`.) We could also create an IAM user with
+permission to pull ECR images.
 
 # Testing
 
