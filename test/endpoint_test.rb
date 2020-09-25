@@ -302,7 +302,7 @@ class EndpointTest < Minitest::Test
                 'size'              => 28399,
                 'mtime'             => '2020-01-01T10:05:30Z',
                 'path'              => '/cfs_files/3663145025.json',
-                'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root'
+                'relative_pathname' => 'repositories/1/collections/1/file_groups/1/root/escher_lego.jpg'
             }
         ]
     }

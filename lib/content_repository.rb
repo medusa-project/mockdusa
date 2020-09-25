@@ -113,7 +113,7 @@ class ContentRepository
               size:              File.size(subpath),
               mtime:             DEFAULT_TIME,
               path:              "/cfs_files/#{node_id}.json",
-              relative_pathname: relative_dir_path[1..-1]
+              relative_pathname: relative_subpath[1..-1]
           }
         end
       end
