@@ -164,6 +164,26 @@ class EndpointTest < Minitest::Test
         'external_id'             => nil,
         'contact_email'           => 'alexd@illinois.edu',
         'private_description'     => nil,
+        'resource_types'          => [
+            { 'name' => 'photographs' },
+            { 'name' => 'still image' }
+        ],
+        'access_systems'          => [
+            {
+                'name'                => 'Some System',
+                'service_owner'       => 'alexd@illinois.edu',
+                'application_manager' => 'alexd@illinois.edu'
+            }
+        ],
+        'rights'                  => {
+            'rights_basis'               => 'copyright',
+            'copyright_jurisdiction'     => 'us',
+            'copyright_statement'        => nil,
+            'custom_copyright_statement' => nil,
+            'access_restrictions'        => 'DISSEMINATE'
+        },
+        'child_collections'       => [],
+        'parent_collections'      => [],
         'id'                      => 1,
         'uuid'                    => '81a13f45-d149-3dd7-f233-53cc395217fa',
         'repository_path'         => '/repositories/1',
