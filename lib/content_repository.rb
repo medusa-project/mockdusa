@@ -12,7 +12,7 @@ class ContentRepository
   #
   def path_for_uuid(uuid)
     Dir.glob(File.join(root, '/repositories/**/*')) do |path|
-      relative_path = path.gsub(root, '')
+      relative_path = path.delete_prefix(root)
       other_uuid    = uuidify(relative_path)
       if other_uuid == uuid
         parts = relative_path.split('/')
@@ -36,7 +36,7 @@ class ContentRepository
     collections = []
     Dir.glob(File.join(root, '/repositories/*/collections/*')) do |collection_path|
       parts                    = collection_path.split('/')
-      relative_collection_path = collection_path.gsub(root, '')
+      relative_collection_path = collection_path.delete_prefix(root)
       collection               = {}
       collection[:id]          = parts[parts.length - 1].to_i
       collection[:uuid]        = uuidify(relative_collection_path)
@@ -50,8 +50,8 @@ class ContentRepository
     id = id.to_i
     Dir.glob(File.join(root, '/repositories/*/collections/*')) do |collection_path|
       parts                    = collection_path.split('/')
-      relative_collection_path = collection_path.gsub(root, '')
-      relative_repo_path       = parts[0..parts.length - 3].join('/').gsub(root, '')
+      relative_collection_path = collection_path.delete_prefix(root)
+      relative_repo_path       = parts[0..parts.length - 3].join('/').delete_prefix(root)
       collection_id            = parts[parts.length - 1].to_i
       next unless collection_id == id
       collection                    = ::YAML.load(File.read(File.join(collection_path, 'info.yml')))
@@ -79,21 +79,21 @@ class ContentRepository
   def directory(id)
     id = id.to_i
     Dir.glob(File.join(root, '/repositories/*/collections/*/file_groups/*/**/*')) do |path|
-      relative_dir_path = path.gsub(root, '')
+      relative_dir_path = path.delete_prefix(root)
       dir_id            = idify(relative_dir_path)
       next unless dir_id == id
       dir = {
           id:                dir_id,
           uuid:              uuidify(relative_dir_path),
           name:              File.basename(relative_dir_path),
-          relative_pathname: path.gsub(root, '')[1..-1],
+          relative_pathname: path.delete_prefix(root)[1..-1],
           subdirectories:    [],
           files:             []
       }
       # Fill in subdirectories and files arrays
       Dir.glob(File.join(path, '*')) do |subpath|
         next if IGNORED_FILES.include?(File.basename(subpath))
-        relative_subpath = subpath.gsub(root, '')
+        relative_subpath = subpath.delete_prefix(root)
         node_id          = idify(relative_subpath)
         node_uuid        = uuidify(relative_subpath)
         if File.directory?(subpath)
@@ -122,7 +122,7 @@ class ContentRepository
       path_parts.pop
       if path_parts[path_parts.length - 2] != 'file_groups'
         parent_path          = path_parts.join('/')
-        relative_parent_path = parent_path.gsub(root, '')
+        relative_parent_path = parent_path.delete_prefix(root)
         parent_id            = idify(relative_parent_path)
         dir[:parent_directory] = {
             id:   parent_id,
@@ -139,7 +139,7 @@ class ContentRepository
   def directory_tree(id)
     id = id.to_i
     Dir.glob(File.join(root, '/repositories/*/collections/*/file_groups/*/**/*')) do |root_path|
-      relative_root_path = root_path.gsub(root, '')
+      relative_root_path = root_path.delete_prefix(root)
       dir_id             = idify(relative_root_path)
       return assemble_tree(root_path) if dir_id == id
     end
@@ -150,7 +150,7 @@ class ContentRepository
     id = id.to_i
     Dir.glob(File.join(root, '/repositories/*/collections/*/file_groups/*/root/**/*')) do |path|
       next unless File.file?(path)
-      relative_file_path = path.gsub(root, '')
+      relative_file_path = path.delete_prefix(root)
       file_id            = idify(relative_file_path)
       next unless file_id == id
       file = {
@@ -181,7 +181,7 @@ class ContentRepository
     id = id.to_i
     Dir.glob(File.join(root, '/repositories/*/collections/*/file_groups/*')) do |file_group_path|
       parts            = file_group_path.split('/')
-      relative_fg_path = file_group_path.gsub(root, '')
+      relative_fg_path = file_group_path.delete_prefix(root)
       file_group_id    = parts[parts.length - 1].to_i
       next unless file_group_id == id
       file_group                  = ::YAML.load(File.read(File.join(file_group_path, 'info.yml')))
@@ -189,7 +189,7 @@ class ContentRepository
       file_group['uuid']          = uuidify(relative_fg_path)
       file_group['collection_id'] = parts[parts.length - 3].to_i
       if file_group['storage_level'] == 'bit_level'
-        relative_dir_path           = File.join(file_group_path, 'root').gsub(root, '')
+        relative_dir_path           = File.join(file_group_path, 'root').delete_prefix(root)
         dir_id                      = idify(relative_dir_path)
         file_group['cfs_directory'] = {
             'id':   dir_id,
@@ -206,7 +206,7 @@ class ContentRepository
   def repositories
     repositories = []
     Dir.glob(File.join(root, 'repositories', '*')) do |repo_path|
-      relative_path = repo_path.gsub(root, '')
+      relative_path = repo_path.delete_prefix(root)
       info_path     = File.join(repo_path, 'info.yml')
       if File.exist?(info_path)
         repo = ::YAML.load(File.read(info_path))
@@ -224,7 +224,7 @@ class ContentRepository
   def repository(id)
     id            = id.to_i
     path          = File.join(root, 'repositories', id.to_s)
-    relative_path = path.gsub(root, '')
+    relative_path = path.delete_prefix(root)
     info_path     = File.join(path, 'info.yml')
     if File.exist?(info_path)
       repo                = ::YAML.load(File.read(info_path))
@@ -257,7 +257,7 @@ class ContentRepository
   private
 
   def assemble_tree(dir_path)
-    relative_path            = dir_path.gsub(root, '')
+    relative_path            = dir_path.delete_prefix(root)
     tree                     = {}
     tree[:id]                = idify(relative_path)
     tree[:uuid]              = uuidify(relative_path)
@@ -280,7 +280,7 @@ class ContentRepository
       if File.directory?(subpath)
         tree[:subdirectories] << assemble_tree(subpath)
       elsif !IGNORED_FILES.include?(File.basename(subpath))
-        relative_subpath = subpath.gsub(root, '')
+        relative_subpath = subpath.delete_prefix(root)
         tree[:files] << {
             id:                idify(relative_subpath),
             uuid:              uuidify(relative_subpath),
@@ -300,7 +300,7 @@ class ContentRepository
   # @return [Integer] Stable integer (<= 2^32) corresponding to the given string.
   #
   def idify(string)
-    Digest::MD5.hexdigest(string.gsub(root, ''))[0..7].hex
+    Digest::MD5.hexdigest(string.delete_prefix(root))[0..7].hex
   end
 
   ##
