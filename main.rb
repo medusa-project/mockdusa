@@ -4,6 +4,8 @@ require 'json'
 require 'sinatra'
 require './lib/content_repository'
 
+set :logging, false
+
 use Rack::Auth::Basic do |user, secret|
   user == 'medusa' && secret == 'secret'
 end
