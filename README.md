@@ -69,7 +69,7 @@ directory and set `REPOSITORY_ROOT` to its path.
 
 ```sh
 $ bundle install
-$ bundle exec rackup
+$ bundle exec rackup --quiet
 ```
 Mockdusa is now listening on port 4567. The HTTP Basic username is `medusa`
 and the secret is `secret`.
