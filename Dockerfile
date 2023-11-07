@@ -1,5 +1,5 @@
 # Keep this version in sync with .ruby-version and Gemfile!
-FROM ruby:2.7.1-slim
+FROM ruby:3.2.2-slim
 
 RUN apt-get update && apt-get install -y \
   build-essential \
@@ -17,4 +17,4 @@ COPY . ./
 
 EXPOSE 4567
 
-CMD ["bundle", "exec", "rackup", "--host", "0.0.0.0", "-p", "4567", "--quiet"]
+CMD ["bundle", "exec", "rackup", "--host", "0.0.0.0", "-p", "4567"]
