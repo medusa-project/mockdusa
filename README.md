@@ -78,7 +78,7 @@ and the secret is `secret`.
 
 ```sh
 $ docker build -t mockdusa .
-$ docker run mockdusa
+$ docker run -p 4567:4567 mockdusa
 ```
 Mockdusa is now listening on port 4567 and using the same HTTP Basic
 credentials as above.
@@ -116,5 +116,6 @@ $ rake test
 ## In Docker
 
 ```sh
-$ docker build -t mockdusa . ; docker run --entrypoint rake mockdusa test
+$ docker build -t mockdusa . \
+    && docker run -p 4567:4567 --entrypoint rake mockdusa test
 ```
